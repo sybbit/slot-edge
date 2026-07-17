@@ -46,7 +46,7 @@
             <img src="banner.png" alt="その1台に『期待値』はあるか？" class="w-full rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] border border-slate-200">
         </div>
 
-        <!-- ★広告枠①：機種選択の一つ上（常時表示：A8楽天リンク復活） -->
+        <!-- ★広告枠①：機種選択の一つ上 -->
         <div class="bg-white rounded-2xl p-4 border border-dashed border-slate-200 text-center">
             <p class="text-[9px] text-slate-400 font-black mb-2 tracking-widest uppercase">RECOMMEND</p>
             <a href="https://rpx.a8.net/svt/ejp?a8mat=4B82L3+3KLNG2+2HOM+686ZL&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26071735719_4B82L3_3KLNG2_2HOM_686ZL%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" target="_blank" rel="nofollow noopener noreferrer" class="block bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left transition-all border border-slate-100">
@@ -136,7 +136,7 @@
         <!-- 計算結果表示エリア ＋ SNSシェアセクション -->
         <div id="result-box" class="hidden bg-white rounded-2xl p-5 shadow-md border transition-all duration-300 space-y-4">
             
-            <!-- ★広告枠②：ANALYSIS RESULTの上（計算結果と連動表示：A8楽天リンク組み込み済） -->
+            <!-- ★広告枠②：ANALYSIS RESULTの上 -->
             <div class="p-1 text-center">
                 <p class="text-[9px] text-slate-400 font-black mb-2 tracking-widest uppercase">RECOMMEND</p>
                 <a href="https://rpx.a8.net/svt/ejp?a8mat=4B82L3+3KLNG2+2HOM+686ZL&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26071735719_4B82L3_3KLNG2_2HOM_686ZL%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" target="_blank" rel="nofollow noopener noreferrer" class="block bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left transition-all border border-slate-100">
@@ -168,46 +168,51 @@
                     <span id="action-advice" class="font-black text-xs px-3 py-1 rounded-full tracking-wider">--</span>
                 </div>
                 
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                <!-- 期待値算出の条件表示 -->
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 mb-4">
                     <div id="detail-comment" class="text-sm text-slate-600 font-bold leading-relaxed"></div>
+                </div>
+
+                <!-- ★新規追加：ヤメ時・立ち回り解説エリア -->
+                <div class="bg-fuchsia-50/50 p-4 rounded-xl border border-fuchsia-100 mt-2">
+                    <h3 class="text-[11px] font-black text-fuchsia-600 mb-2 flex items-center tracking-wider">
+                        <i class="fa-solid fa-lightbulb mr-1.5"></i> 立ち回りのポイント（ヤメ時・恩恵）
+                    </h3>
+                    <div id="strategy-advice" class="text-[13px] text-slate-700 leading-relaxed font-medium">
+                        <!-- ここにJSで動的に解説が挿入されます -->
+                    </div>
                 </div>
             </div>
 
             <!-- SNSシェアコントロールセンター -->
-            <div class="pt-2 border-t border-slate-100 space-y-2.5">
+            <div class="pt-4 border-t border-slate-100 space-y-2.5">
                 <p class="text-[10px] font-black text-slate-400 tracking-wider text-center uppercase">この分析結果をシェアする</p>
                 
-                <!-- X (Twitter) 一発シェアボタン -->
                 <a id="btn-share-x" target="_blank" href="#" class="w-full bg-slate-900 hover:bg-black text-white py-3 rounded-xl flex items-center justify-center space-x-2 text-xs font-black transition-all shadow-sm active:scale-[0.98]">
                     <i class="fa-brands fa-x-twitter text-sm"></i>
                     <span>X（Twitter）で結果をポスト</span>
                 </a>
 
-                <!-- インスタ・TikTok用：結果コピー ＆ 各種SNS公式リンクボタン -->
                 <div class="grid grid-cols-3 gap-2">
-                    <!-- コピーボタン -->
                     <button onclick="copyResultToClipboard()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl flex flex-col items-center justify-center transition-all active:scale-[0.95] border border-slate-200/40">
                         <i class="fa-solid fa-copy text-sm mb-1"></i>
                         <span class="text-[9px] font-black">結果をコピー</span>
                     </button>
-                    <!-- Instagramリンク -->
                     <a href="https://instagram.com" target="_blank" class="bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white py-3 rounded-xl flex flex-col items-center justify-center transition-all active:scale-[0.95] shadow-sm">
                         <i class="fa-brands fa-instagram text-sm mb-1"></i>
                         <span class="text-[9px] font-black">Instagram</span>
                     </a>
-                    <!-- TikTokリンク -->
                     <a href="https://tiktok.com" target="_blank" class="bg-slate-900 text-white py-3 rounded-xl flex flex-col items-center justify-center transition-all active:scale-[0.95] shadow-sm border border-slate-800">
                         <i class="fa-brands fa-tiktok text-sm mb-1 text-cyan-400 drop-shadow-[1px_1px_0_rgba(239,68,68,1)]"></i>
                         <span class="text-[9px] font-black">TikTok</span>
                     </a>
                 </div>
-                <!-- コピー成功メッセージの表示用 -->
                 <p id="copy-toast" class="hidden text-[10px] text-emerald-600 font-bold text-center animate-pulse"><i class="fa-solid fa-check mr-1"></i>クリップボードに結果をコピーしました！</p>
             </div>
         </div>
     </main>
 
-    <!-- フッター（リスク管理のための免責事項を綺麗に統合） -->
+    <!-- フッター -->
     <footer class="bg-white p-6 border-t border-slate-100">
         <div class="max-w-md mx-auto text-center">
             <p class="text-[9px] text-slate-400 leading-relaxed text-justify mb-4 opacity-80 bg-slate-50 p-3 rounded-lg border border-slate-100">
@@ -219,7 +224,6 @@
 
     <!-- JavaScriptロジック -->
     <script>
-        // 機種ごとの初期値・内部状態の定義データを集約
         const machineConfigs = {
             hokuto: {
                 name: "スマスロ北斗の拳",
@@ -252,7 +256,6 @@
 
         let currentShareText = "";
 
-        // 機種が切り替わったときの処理
         function onMachineChange() {
             const machine = document.getElementById('machine-select').value;
             const config = machineConfigs[machine];
@@ -302,9 +305,7 @@
             });
         }
 
-        // ★超進化：1円単位で滑らかに期待値が変動する実戦値シミュレーター関数
         function getLinearValue(game, points) {
-            // ポイントデータの境界をチェックして直線補間する
             for (let i = 0; i < points.length - 1; i++) {
                 const p1 = points[i];
                 const p2 = points[i+1];
@@ -313,10 +314,9 @@
                     return p1.v + (p2.v - p1.v) * rate;
                 }
             }
-            // 境界を超えた場合は最後の値をベースに加算
             const last = points[points.length - 1];
             if (game > last.g) {
-                return last.v + (game - last.g) * 25; // 天井間際は1Gあたり25円上昇と仮定
+                return last.v + (game - last.g) * 25;
             }
             return points[0].v;
         }
@@ -332,8 +332,8 @@
             const expectValue = document.getElementById('expect-value');
             const actionAdvice = document.getElementById('action-advice');
             const detailComment = document.getElementById('detail-comment');
+            const strategyAdvice = document.getElementById('strategy-advice'); // 新規追加
 
-            // 未入力時はプレースホルダーの値を自動採用（ホールでの片手入力を超楽にする機能！）
             if (isNaN(game)) {
                 game = parseInt(document.getElementById('game-count').placeholder);
             }
@@ -347,131 +347,88 @@
 
             let baseValue = 0;
             let borderGame = 0;
+            let strategyText = ""; // 立ち回り解説用テキスト
             const config = machineConfigs[machine];
 
-            // --- 🎰 3機種のリアル実戦値ベース傾斜データ ---
+            // --- 🎰 3機種のロジック ＆ ヤメ時解説 ---
             if (machine === 'hokuto') {
-                // 【スマスロ北斗の拳】液晶表示ベースのリアル期待値ロジック
                 if (status === 'reset') {
-                    // 設定変更時：天井が800G+αに大幅短縮
-                    borderGame = 180; // ★等価ボーダー：実ゲーム180G
+                    borderGame = 180;
+                    strategyText = "【狙い目】設定変更時は天井が800G+αに短縮されるため、非常に浅いゲーム数から狙えます。<br>【ヤメ時】AT終了後、1G連（天国・前兆）がないことを確認して即ヤメ。";
                     baseValue = getLinearValue(game, [
-                        {g: 0, v: -400}, 
-                        {g: 100, v: 100}, 
-                        {g: 180, v: 1100}, // ★等価狙い目（180Gで期待値約+1100円）
-                        {g: 280, v: 2600}, // ★56枚現金ボーダー（280Gで期待値約+2600円）
-                        {g: 400, v: 4500}, 
-                        {g: 600, v: 7500},
-                        {g: 800, v: 12000} // 短縮天井（800G）
+                        {g: 0, v: -400}, {g: 100, v: 100}, {g: 180, v: 1100}, 
+                        {g: 280, v: 2600}, {g: 400, v: 4500}, {g: 600, v: 7500}, {g: 800, v: 12000}
                     ]);
                 } else if (status === 'single') {
-                    // 前回単発後（通常天井だが、天国モード等の冷遇抜け期待を踏まえて若干優遇）
-                    borderGame = 420; 
+                    borderGame = 420;
+                    strategyText = "【狙い目】前回単発後は天国モードなどの優遇を考慮し、通常より少し浅めから狙えます。天井は最大1268G+αです。<br>【ヤメ時】AT終了後、即前兆や高確を確認してヤメ。";
                     baseValue = getLinearValue(game, [
-                        {g: 0, v: -800}, 
-                        {g: 300, v: -300}, 
-                        {g: 420, v: 1300}, // ★等価狙い目
-                        {g: 500, v: 2500}, // ★56枚現金ボーダー
-                        {g: 700, v: 5500}, 
-                        {g: 1000, v: 9500},
-                        {g: 1268, v: 15000} // 天井（1268G）
+                        {g: 0, v: -800}, {g: 300, v: -300}, {g: 420, v: 1300}, 
+                        {g: 500, v: 2500}, {g: 700, v: 5500}, {g: 1000, v: 9500}, {g: 1268, v: 15000}
                     ]);
                 } else {
-                    // 通常時（実戦値ベース通算期待値）
-                    borderGame = 580; // ★等価ボーダー：実ゲーム580G
+                    borderGame = 580;
+                    strategyText = "【狙い目】通常時の天井は最大1268G+α（液晶ゲーム数基準）。天井到達時はバトルボーナス当選が確定します。<br>【ヤメ時】AT終了後、1G連や前兆がないことを確認して即ヤメを徹底してください。";
                     baseValue = getLinearValue(game, [
-                        {g: 0, v: -1100}, 
-                        {g: 300, v: -750}, 
-                        {g: 500, v: -100}, 
-                        {g: 580, v: 1200}, // ★等価狙い目（580Gで期待値約+1200円）
-                        {g: 680, v: 2800}, // ★56枚現金ボーダー（680Gで期待値約+2800円）
-                        {g: 800, v: 4500}, 
-                        {g: 1000, v: 8000},
-                        {g: 1268, v: 14000} // 通常時天井（1268G）
+                        {g: 0, v: -1100}, {g: 300, v: -750}, {g: 500, v: -100}, 
+                        {g: 580, v: 1200}, {g: 680, v: 2800}, {g: 800, v: 4500}, {g: 1000, v: 8000}, {g: 1268, v: 14000}
                     ]);
                 }
             }
             else if (machine === 'ghoul') {
-                // 【スマスロ東京喰種】CZ間ハマりベースのリアル期待値ロジック
                 if (status === 'reset') {
-                    // 設定変更時：天井が200G+αに大幅短縮
-                    borderGame = 80; // ★等価ボーダー：実ゲーム80G
+                    borderGame = 80;
+                    strategyText = "【狙い目】設定変更時はCZ間天井が最大200G+αに大幅短縮！非常に美味しい状況です。<br>【ヤメ時】CZ当選まで打ち切り。CZ終了後は即ヤメ、AT当選時はAT終了後の即前兆を確認してヤメ。";
                     baseValue = getLinearValue(game, [
-                        {g: 0, v: -200}, 
-                        {g: 50, v: 200}, 
-                        {g: 80, v: 1000},  // ★等価狙い目
-                        {g: 130, v: 2500}, // ★56枚現金ボーダー
-                        {g: 200, v: 6500}  // 短縮天井（200G）
+                        {g: 0, v: -200}, {g: 50, v: 200}, {g: 80, v: 1000}, 
+                        {g: 130, v: 2500}, {g: 200, v: 6500}
                     ]);
                 } else if (status === 'through') {
-                    // CZスルー後（AT間天井が近い、またはスルー優遇を想定してボーダー優遇）
-                    borderGame = 300; 
+                    borderGame = 300;
+                    strategyText = "【狙い目】CZスルー後はAT間天井（1200G）が近い場合などがあり、ボーダーを優遇できます。データ機のCZ間ハマりを基準に狙います。<br>【ヤメ時】CZ終了後、即ヤメ。AT後は即前兆確認ヤメ。";
                     baseValue = getLinearValue(game, [
-                        {g: 0, v: -600}, 
-                        {g: 200, v: 200}, 
-                        {g: 300, v: 1400}, // ★等価狙い目
-                        {g: 380, v: 3000}, // ★56枚現金ボーダー
-                        {g: 500, v: 5800}, 
-                        {g: 600, v: 8500}  // CZ間天井（600G）
+                        {g: 0, v: -600}, {g: 200, v: 200}, {g: 300, v: 1400}, 
+                        {g: 380, v: 3000}, {g: 500, v: 5800}, {g: 600, v: 8500}
                     ]);
                 } else {
-                    // 通常時（AT間600G未満のCZ間天井狙い）
-                    borderGame = 380; // ★等価ボーダー：実ゲーム380G
+                    borderGame = 380;
+                    strategyText = "【狙い目】CZ間の最大天井（600G+α）を狙います。※AT間ハマりが600G未満であることを確認してください。<br>【ヤメ時】CZ当選まで打ち切り。CZ終了後、即ヤメ。AT後は即前兆確認ヤメ。";
                     baseValue = getLinearValue(game, [
-                        {g: 0, v: -1000}, 
-                        {g: 200, v: -600}, 
-                        {g: 300, v: -100}, 
-                        {g: 380, v: 1200}, // ★等価狙い目（380Gで期待値約+1200円）
-                        {g: 450, v: 2600}, // ★56枚現金ボーダー（450Gで期待値約+2600円）
-                        {g: 550, v: 5500}, 
-                        {g: 600, v: 7500}  // CZ間天井（600G）
+                        {g: 0, v: -1000}, {g: 200, v: -600}, {g: 300, v: -100}, 
+                        {g: 380, v: 1200}, {g: 450, v: 2600}, {g: 550, v: 5500}, {g: 600, v: 7500}
                     ]);
                 }
             }
             else if (machine === 'karakuri2') {
-                // 【からくりサーカス2】実ゲーム数ベースのリアル期待値ロジック
                 if (status === 'reset') {
-                    // リセット時：液晶500G天井＝実ゲーム数だと約370G付近が天井
-                    borderGame = 160; 
+                    borderGame = 160;
+                    strategyText = "【狙い目】設定変更時は液晶500G+α（実ゲーム数約370G）に天井が短縮されます。<br>【ヤメ時】AT当選まで打ち切り。終了後は引き戻し等の恩恵を確認してヤメ。";
                     baseValue = getLinearValue(game, [
-                        {g: 0, v: -400}, 
-                        {g: 100, v: 100}, 
-                        {g: 160, v: 1200}, // リセット時狙い目
-                        {g: 250, v: 3800}, 
-                        {g: 370, v: 8000}  // 実質天井
+                        {g: 0, v: -400}, {g: 100, v: 100}, {g: 160, v: 1200}, 
+                        {g: 250, v: 3800}, {g: 370, v: 8000}
                     ]);
                 } else if (status === 'end') {
-                    // 上位AT終了後（仮：通常より少し優遇されるため中間のボーダーに設定）
-                    borderGame = 320; 
+                    borderGame = 320;
+                    strategyText = "【狙い目】上位AT終了後は、通常よりも初当たりや突破率が優遇される傾向があるためボーダーを下げられます。<br>【ヤメ時】AT当選まで打ち切り。終了後は引き戻し等の恩恵を確認してヤメ。";
                     baseValue = getLinearValue(game, [
-                        {g: 0, v: -1000}, 
-                        {g: 200, v: -300}, 
-                        {g: 320, v: 1500}, 
-                        {g: 500, v: 4500}, 
-                        {g: 700, v: 9000}
+                        {g: 0, v: -1000}, {g: 200, v: -300}, {g: 320, v: 1500}, 
+                        {g: 500, v: 4500}, {g: 700, v: 9000}
                     ]);
                 } else {
-                    // 通常時（実ゲーム数ベース）
-                    borderGame = 520; // ★等価ボーダー：実ゲーム520G
+                    borderGame = 520;
+                    strategyText = "【狙い目】実ゲーム数ベースでの通常天井（890G+α）または液晶天井（1200G+α）を狙います。<br>【ヤメ時】AT当選まで打ち切り。終了後は引き戻しゾーン等をカバーしてヤメ。";
                     baseValue = getLinearValue(game, [
-                        {g: 0, v: -1800}, 
-                        {g: 200, v: -1300}, 
-                        {g: 400, v: -400}, 
-                        {g: 520, v: 1500}, // ★等価狙い目（520Gで期待値約+1500円）
-                        {g: 610, v: 3200}, // ★56枚現金ボーダー（610Gで期待値約+3200円）
-                        {g: 750, v: 6800}, 
-                        {g: 890, v: 11000} // 実ゲーム数天井（890G）
+                        {g: 0, v: -1800}, {g: 200, v: -1300}, {g: 400, v: -400}, 
+                        {g: 520, v: 1500}, {g: 610, v: 3200}, {g: 750, v: 6800}, {g: 890, v: 11000}
                     ]);
                 }
             }
 
-            // 設定ベースによる補正（設定2なら全体的にベース底上げ）
             if (setting === '2') {
                 baseValue += 600 + (game * 0.3);
                 borderGame -= 40;
             }
 
-            // 交換率による補正
             let finalValue = baseValue;
             let rateText = "等価交換";
             if (rate === '56p') { 
@@ -479,14 +436,12 @@
                 rateText = "5.6枚(貯メダル)"; 
             }
             if (rate === '56c') { 
-                // 現金投資は手持ちの残りゲーム数に応じたギャップペナルティをよりリアルに計算
                 const remainingGames = Math.max(0, 1000 - game);
                 finalValue = Math.round((baseValue - (remainingGames * 1.6)) * 0.89); 
                 borderGame += 60; 
                 rateText = "5.6枚(現金投資)"; 
             }
 
-            // アクションとデザインカラーの判定
             let advice = game < borderGame - 40 ? "見送り推奨" : game < borderGame ? "慎重に検討" : "遊技を推奨！";
             let colorClass = game < borderGame - 40 ? "text-rose-500" : game < borderGame ? "text-amber-600" : "text-emerald-600 font-black";
             let adviceBgClass = game < borderGame - 40 ? "bg-rose-50 text-rose-600 border border-rose-200" : game < borderGame ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200";
@@ -513,6 +468,9 @@
                     <p class="text-slate-700 mt-2">この環境における目安ボーダーラインは <span class="text-fuchsia-600 font-black">${Math.max(0, borderGame)} G</span> です。</p>
                 </div>
             `;
+
+            // ★ヤメ時・解説テキストの反映
+            strategyAdvice.innerHTML = strategyText;
 
             currentShareText = `SlotEdgeで期待値分析完了！\n\n【機種】${config.name}\n【状態】${statusText} (${settingText})\n【環境】${rateText}\n【ゲーム数】${game}G\n\n➔ 算出期待値：${formattedValue}（${advice}）\n\n客観的データで狙う、立ち回りの優位性。`;
             
