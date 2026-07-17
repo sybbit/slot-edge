@@ -46,6 +46,25 @@
             <img src="banner.png" alt="その1台に『期待値』はあるか？" class="w-full rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] border border-slate-200">
         </div>
 
+        <!-- ★広告枠①：機種選択の一つ上（常時表示：A8楽天リンク組み込み済） -->
+        <div class="bg-white rounded-2xl p-4 border border-dashed border-slate-200 text-center">
+            <p class="text-[9px] text-slate-400 font-black mb-2 tracking-widest uppercase">RECOMMEND</p>
+            <a href="https://rpx.a8.net/svt/ejp?a8mat=4B82L3+3KLNG2+2HOM+686ZL&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26071735719_4B82L3_3KLNG2_2HOM_686ZL%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" target="_blank" rel="nofollow noopener noreferrer" class="block bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left transition-all border border-slate-100">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-fuchsia-50 text-fuchsia-600 p-2.5 rounded-lg border border-fuchsia-100">
+                        <i class="fa-solid fa-bag-shopping text-base"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-black text-slate-700">楽天市場でホールの便利グッズを探す</h4>
+                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">データ表示機やノイキャン耳栓など売れ筋特集</p>
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+            </a>
+            <!-- A8用の計測用隠しドット（成果判定に必須） -->
+            <img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=4B82L3+3KLNG2+2HOM+686ZL" alt="" class="hidden">
+        </div>
+
         <!-- ① 機種選択 -->
         <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60">
             <label class="block text-sm font-bold text-slate-700 mb-2.5 tracking-wide">
@@ -117,7 +136,27 @@
 
         <!-- 計算結果表示エリア ＋ SNSシェアセクション -->
         <div id="result-box" class="hidden bg-white rounded-2xl p-5 shadow-md border transition-all duration-300 space-y-4">
-            <div>
+            
+            <!-- ★広告枠②：ANALYSIS RESULTの上（計算結果と連動表示：A8楽天リンク組み込み済） -->
+            <div class="p-1 text-center">
+                <p class="text-[9px] text-slate-400 font-black mb-2 tracking-widest uppercase">RECOMMEND</p>
+                <a href="https://rpx.a8.net/svt/ejp?a8mat=4B82L3+3KLNG2+2HOM+686ZL&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26071735719_4B82L3_3KLNG2_2HOM_686ZL%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" target="_blank" rel="nofollow noopener noreferrer" class="block bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left transition-all border border-slate-100">
+                    <div class="flex items-center space-x-3">
+                        <div class="bg-fuchsia-50 text-fuchsia-600 p-2.5 rounded-lg border border-fuchsia-100">
+                            <i class="fa-solid fa-battery-three-quarters text-base animate-pulse"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-black text-slate-700">ホールの生命線！爆速スマホ充電器</h4>
+                            <p class="text-[10px] text-slate-500 font-medium mt-0.5">期待値計算で充電が切れる前に。楽天ポイントも貯まる！</p>
+                        </div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
+                </a>
+                <img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=4B82L3+3KLNG2+2HOM+686ZL" alt="" class="hidden">
+            </div>
+
+            <!-- 区切り線と結果ヘッダー -->
+            <div class="border-t border-slate-100 pt-4">
                 <h2 class="text-xs font-black text-slate-400 text-center mb-4 tracking-widest uppercase"><i class="fa-solid fa-magnifying-glass-chart mr-1.5 text-fuchsia-500"></i>ANALYSIS RESULT</h2>
                 
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3.5 mb-3.5">
@@ -166,24 +205,6 @@
                 <!-- コピー成功メッセージの表示用 -->
                 <p id="copy-toast" class="hidden text-[10px] text-emerald-600 font-bold text-center animate-pulse"><i class="fa-solid fa-check mr-1"></i>クリップボードに結果をコピーしました！</p>
             </div>
-        </div>
-
-        <!-- アフィリエイト枠（クリック可能に統合済み） -->
-        <div class="bg-white rounded-2xl p-4 border border-dashed border-slate-200 text-center">
-            <p class="text-[9px] text-slate-400 font-black mb-2 tracking-widest uppercase">RECOMMEND</p>
-            <!-- リンク先 href は後ほどご自身のアフィリエイトURLに書き換えてください -->
-            <a href="https://slotedge.com" target="_blank" rel="noopener noreferrer" class="block bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left cursor-pointer transition-all border border-slate-100">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-fuchsia-50 text-fuchsia-600 p-2.5 rounded-lg border border-fuchsia-100">
-                        <i class="fa-solid fa-piggy-bank text-base"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-black text-slate-700">立ち回りの軍資金を賢く作る</h4>
-                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">スロッターの支持率が高い人気カード特集</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
-            </a>
         </div>
     </main>
 
