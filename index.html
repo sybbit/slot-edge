@@ -1,194 +1,92 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Slot-Edge</title>
-    <style>
-        body {
-            background-color: #0d0d13;
-            color: #e2e8f0;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            max-width: 400px;
-            width: 100%;
-            background: linear-gradient(145deg, #151522, #1a1a2e);
-            border: 1px solid #3b0764;
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 8px 32px 0 rgba(112, 26, 117, 0.2);
-            box-sizing: border-box;
-        }
-        h1 {
-            text-align: center;
-            color: #d8b4fe;
-            font-size: 24px;
-            margin-bottom: 24px;
-            text-shadow: 0 0 10px rgba(216, 180, 254, 0.5);
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #a78bfa;
-        }
-        select, input {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid #4c1d95;
-            background-color: #0f172a;
-            color: #fff;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-        select:focus, input:focus {
-            outline: none;
-            border-color: #c084fc;
-            box-shadow: 0 0 8px rgba(192, 132, 252, 0.5);
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(90deg, #7c3aed, #db2777);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
-        }
-        button:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-        .result {
-            margin-top: 24px;
-            padding: 16px;
-            border-radius: 8px;
-            background-color: #020617;
-            border-left: 4px solid #db2777;
-            display: none;
-        }
-        .result-title {
-            font-size: 14px;
-            color: #94a3b8;
-            margin-bottom: 4px;
-        }
-        .result-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #34d399;
-        }
-        .note {
-            font-size: 12px;
-            color: #64748b;
-            margin-top: 4px;
-        }
-    </style>
-</head>
-<body>
-
-<div class="container">
-    <h1>Slot-Edge</h1>
-    
-    <label for="machine">機種を選択</label>
-    <select id="machine" onchange="updateLabels()">
+<!-- 1 機種を選択 -->
+<div class="card">
+    <div class="badge-title"><span class="badge">1</span> 機種を選択</div>
+    <!-- id="machine-select" を追加し、onchange イベントを紐付けます -->
+    <select id="machine-select" onchange="onMachineChange()">
         <option value="hokuto">スマスロ北斗の拳</option>
         <option value="ghoul">スマスロ東京喰種</option>
-        <option value="karakuri2">Lからくりサーカス2</option>
+        <option value="karakuri2">Lパチスロ からくりサーカス2</option>
     </select>
+</div>
 
-    <label id="input-label" for="games">現在のゲーム数</label>
-    <input type="number" id="games" placeholder="例: 300" min="0">
-
-    <button onclick="calculateEdge()">期待値を計算する</button>
-
-    <div class="result" id="result-box">
-        <div class="result-title">算出期待値 (等価換算)</div>
-        <div class="result-value" id="edge-output">±0 円</div>
-        <div class="note" id="target-note">狙い目ライン: --</div>
+<!-- 2 現在の状態を入力 -->
+<div class="card">
+    <div class="badge-title"><span class="badge">2</span> 現在の状態を入力</div>
+    
+    <div class="input-section">
+        <label>内部状態</label>
+        <!-- ここにJavaScriptで動的にボタンを生成します -->
+        <div class="segment-control" id="state-buttons-container">
+            <!-- 初期状態（北斗の拳） -->
+            <button type="button" class="segment-btn active" onclick="selectState(this)">通常</button>
+            <button type="button" class="segment-btn" onclick="selectState(this)">朝イチ(リセ)</button>
+            <button type="button" class="segment-btn" onclick="selectState(this)">前回単発後</button>
+        </div>
     </div>
+    
+    <!-- （省略：交換率や設定ベースは全機種共通なのでそのままでOKです） -->
+
+    <div class="input-section">
+        <label>現在の回転数 (G)</label>
+        <div class="input-container">
+            <!-- id="games-input" を追加します -->
+            <input type="number" id="games-input" placeholder="350">
+            <span class="unit">G</span>
+        </div>
+    </div>
+
+    <button class="submit-btn" onclick="calculateEdge()">期待値を計算する</button>
 </div>
 
 <script>
-    // 機種ごとの仮データ（※ここに後で本物の数値を入れます）
-    const machineData = {
-        hokuto: {
-            ceil: 1268,
-            recommend: "500G〜"
-        },
-        ghoul: {
-            ceil: 1000, // 仮の天井値
-            recommend: "調査中（データ入力待ち）"
-        },
-        karakuri2: {
-            ceil: 1200, // 仮の天井値
-            recommend: "調査中（データ入力待ち）"
-        }
-    };
-
-    function updateLabels() {
-        const machine = document.getElementById('machine').value;
-        const data = machineData[machine];
-        document.getElementById('games').placeholder = `例: ${Math.floor(data.ceil / 3)}`;
+// ★ 機種ごとの状態（ステータス）と、初期プレースホルダーの定義
+const machineConfigs = {
+    hokuto: {
+        placeholder: "350",
+        states: ["通常", "朝イチ(リセ)", "前回単発後"]
+    },
+    ghoul: {
+        placeholder: "200",
+        states: ["通常", "設定変更(リセ)", "CZスルー後"]
+    },
+    karakuri2: {
+        placeholder: "400",
+        states: ["通常", "設定変更(リセ)", "上位AT終了後"]
     }
+};
 
-    function calculateEdge() {
-        const machine = document.getElementById('machine').value;
-        const games = parseInt(document.getElementById('games').value);
+// ★ 機種が切り替わったときに実行される関数
+function onMachineChange() {
+    const selectedMachine = document.getElementById("machine-select").value;
+    const config = machineConfigs[selectedMachine];
+
+    // 1. 回転数のプレースホルダーを切り替え
+    document.getElementById("games-input").placeholder = config.placeholder;
+
+    // 2. 内部状態のボタンを動的に書き換え
+    const container = document.getElementById("state-buttons-container");
+    container.innerHTML = ""; // 一旦中身を空にする
+
+    config.states.forEach((stateName, index) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        // 最初のボタンだけアクティブ（白背景）にする
+        btn.className = index === 0 ? "segment-btn active" : "segment-btn";
+        btn.innerText = stateName;
         
-        if (isNaN(games) || games < 0) {
-            alert('正しいゲーム数を入力してください');
-            return;
-        }
+        // クリックイベント（アクティブクラスの切り替え）を付与
+        btn.onclick = function() {
+            selectState(this);
+        };
+        
+        container.appendChild(btn);
+    });
+}
 
-        const data = machineData[machine];
-        let resultText = "";
-        let targetText = `狙い目目安: ${data.recommend}`;
-
-        // --- 期待値計算ロジック（北斗の拳の簡易サンプル） ---
-        if (machine === 'hokuto') {
-            if (games >= 1268) {
-                resultText = "天井到達";
-            } else if (games >= 800) {
-                resultText = `約 +3,500 円`;
-            } else if (games >= 600) {
-                resultText = `約 +1,800 円`;
-            } else if (games >= 400) {
-                resultText = `約 +400 円`;
-            } else {
-                resultText = `約 -600 円`;
-            }
-        } 
-        // --- 東京喰種のロジック（数値待ち） ---
-        else if (machine === 'ghoul') {
-            resultText = "データ登録後に計算可能になります";
-        } 
-        // --- からくり2のロジック（数値待ち） ---
-        else if (machine === 'karakuri2') {
-            resultText = "データ登録後に計算可能になります";
-        }
-
-        // 結果を表示
-        const resultBox = document.getElementById('result-box');
-        const output = document.getElementById('edge-output');
-        const note = document.getElementById('target-note');
-
-        output.innerText = resultText;
-        note.innerText = targetText;
-        resultBox.style.display = 'block';
-    }
+// ★ 内部状態ボタンをクリックしたときに白背景（active）を切り替える関数
+function selectState(clickedButton) {
+    const buttons = clickedButton.parentElement.querySelectorAll(".segment-btn");
+    buttons.forEach(btn => btn.classList.remove("active"));
+    clickedButton.classList.add("active");
+}
 </script>
-
-</body>
-</html>
