@@ -1,302 +1,194 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlotEdge | 期待値・立ち回り分析ツール</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-    
-    <!-- フォント統合 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@500;700;900&family=Plus+Jakarta+Sans:ital,wght@0,800;1,800&display=swap" rel="stylesheet">
-
+    <title>Slot-Edge</title>
     <style>
         body {
-            font-family: 'Plus Jakarta Sans', 'Noto Sans JP', sans-serif;
-            letter-spacing: -0.02em;
+            background-color: #0d0d13;
+            color: #e2e8f0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: linear-gradient(145deg, #151522, #1a1a2e);
+            border: 1px solid #3b0764;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 8px 32px 0 rgba(112, 26, 117, 0.2);
+            box-sizing: border-box;
+        }
+        h1 {
+            text-align: center;
+            color: #d8b4fe;
+            font-size: 24px;
+            margin-bottom: 24px;
+            text-shadow: 0 0 10px rgba(216, 180, 254, 0.5);
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #a78bfa;
+        }
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #4c1d95;
+            background-color: #0f172a;
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: #c084fc;
+            box-shadow: 0 0 8px rgba(192, 132, 252, 0.5);
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(90deg, #7c3aed, #db2777);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
+        }
+        button:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+        .result {
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 8px;
+            background-color: #020617;
+            border-left: 4px solid #db2777;
+            display: none;
+        }
+        .result-title {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+        }
+        .result-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #34d399;
+        }
+        .note {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 4px;
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between font-sans">
+<body>
 
-    <!-- ヘッダー -->
-    <header class="bg-slate-950 border-b border-fuchsia-500/20 py-3.5 px-4 sticky top-0 z-50 shadow-lg shadow-slate-950/20">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <a href="#" class="flex items-center space-x-1 hover:opacity-90 transition-opacity">
-                <div class="transform -skew-x-12 bg-gradient-to-r from-fuchsia-600 to-purple-600 text-white font-black text-sm px-2.5 py-0.5 tracking-tighter uppercase shadow-[0_0_12px_rgba(217,70,239,0.4)]">
-                    SLOT
-                </div>
-                <div class="text-lg font-black italic tracking-tighter text-white transform -skew-x-12 flex items-baseline">
-                    EDGE
-                    <span class="text-fuchsia-400 text-[10px] not-italic font-bold ml-0.5">.com</span>
-                </div>
-            </a>
-            <span class="bg-fuchsia-950/80 text-fuchsia-400 text-[10px] px-2.5 py-0.5 rounded-full font-bold border border-fuchsia-500/30">Beta</span>
-        </div>
-    </header>
+<div class="container">
+    <h1>Slot-Edge</h1>
+    
+    <label for="machine">機種を選択</label>
+    <select id="machine" onchange="updateLabels()">
+        <option value="hokuto">スマスロ北斗の拳</option>
+        <option value="ghoul">スマスロ東京喰種</option>
+        <option value="karakuri2">Lからくりサーカス2</option>
+    </select>
 
-    <!-- メインコンテンツ -->
-    <main class="flex-grow p-4 max-w-md mx-auto w-full space-y-4">
+    <label id="input-label" for="games">現在のゲーム数</label>
+    <input type="number" id="games" placeholder="例: 300" min="0">
+
+    <button onclick="calculateEdge()">期待値を計算する</button>
+
+    <div class="result" id="result-box">
+        <div class="result-title">算出期待値 (等価換算)</div>
+        <div class="result-value" id="edge-output">±0 円</div>
+        <div class="note" id="target-note">狙い目ライン: --</div>
+    </div>
+</div>
+
+<script>
+    // 機種ごとの仮データ（※ここに後で本物の数値を入れます）
+    const machineData = {
+        hokuto: {
+            ceil: 1268,
+            recommend: "500G〜"
+        },
+        ghoul: {
+            ceil: 1000, // 仮の天井値
+            recommend: "調査中（データ入力待ち）"
+        },
+        karakuri2: {
+            ceil: 1200, // 仮の天井値
+            recommend: "調査中（データ入力待ち）"
+        }
+    };
+
+    function updateLabels() {
+        const machine = document.getElementById('machine').value;
+        const data = machineData[machine];
+        document.getElementById('games').placeholder = `例: ${Math.floor(data.ceil / 3)}`;
+    }
+
+    function calculateEdge() {
+        const machine = document.getElementById('machine').value;
+        const games = parseInt(document.getElementById('games').value);
         
-        <!-- 神バナー画像 -->
-        <div class="relative group">
-            <img src="banner.png" alt="その1台に『期待値』はあるか？" class="w-full rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] border border-slate-200">
-        </div>
-
-        <!-- ① 機種選択 -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60">
-            <label class="block text-sm font-bold text-slate-700 mb-2.5 tracking-wide">
-                <span class="inline-block bg-fuchsia-50 text-fuchsia-600 text-xs px-2 py-0.5 rounded mr-1.5 font-black border border-fuchsia-200/60">1</span>機種を選択
-            </label>
-            <div class="relative">
-                <select id="machine-select" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-800 font-bold focus:outline-none focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-400 appearance-none transition-all cursor-pointer">
-                    <option value="hokuto">スマスロ北斗の拳</option>
-                </select>
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                    <i class="fa-solid fa-chevron-down text-sm"></i>
-                </div>
-            </div>
-        </div>
-
-        <!-- ② データ入力 -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60 space-y-4">
-            <label class="block text-sm font-bold text-slate-700 mb-1 tracking-wide">
-                <span class="inline-block bg-fuchsia-50 text-fuchsia-600 text-xs px-2 py-0.5 rounded mr-1.5 font-black border border-fuchsia-200/60">2</span>現在の状態を入力
-            </label>
-            
-            <!-- 内部状態選択 -->
-            <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1.5 tracking-wider uppercase">内部状態</label>
-                <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1 rounded-xl">
-                    <button type="button" onclick="setParam('status', 'normal')" id="btn-status-normal" class="py-2.5 text-xs font-black rounded-lg transition-all bg-white text-slate-900 shadow-sm border border-slate-200/40">通常</button>
-                    <button type="button" onclick="setParam('status', 'reset')" id="btn-status-reset" class="py-2.5 text-xs font-black rounded-lg transition-all text-slate-500 hover:text-slate-800">朝イチ(リセ)</button>
-                    <button type="button" onclick="setParam('status', 'single')" id="btn-status-single" class="py-2.5 text-xs font-black rounded-lg transition-all text-slate-500 hover:text-slate-800">前回単発後</button>
-                </div>
-                <input type="hidden" id="internal-status" value="normal">
-            </div>
-
-            <!-- 交換率選択 -->
-            <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1.5 tracking-wider uppercase">ホールの交換率 / 投資環境</label>
-                <div class="grid grid-cols-3 gap-2 bg-slate-100 p-1 rounded-xl">
-                    <button type="button" onclick="setParam('rate', '50')" id="btn-rate-50" class="py-2.5 text-[10px] md:text-xs font-black rounded-lg transition-all bg-white text-slate-900 shadow-sm border border-slate-200/40">等価(5.0枚)</button>
-                    <button type="button" onclick="setParam('rate', '56p')" id="btn-rate-56p" class="py-2.5 text-[10px] md:text-xs font-black rounded-lg transition-all text-slate-500 hover:text-slate-800">5.6枚(貯メ)</button>
-                    <button type="button" onclick="setParam('rate', '56c')" id="btn-rate-56c" class="py-2.5 text-[10px] md:text-xs font-black rounded-lg transition-all text-slate-500 hover:text-slate-800">5.6枚(現金)</button>
-                </div>
-                <input type="hidden" id="exchange-rate" value="50">
-            </div>
-
-            <!-- 見込み設定選択 -->
-            <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1.5 tracking-wider uppercase">ホールの見込み設定ベース</label>
-                <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-xl">
-                    <button type="button" onclick="setParam('setting', '1')" id="btn-setting-1" class="py-2.5 text-xs font-black rounded-lg transition-all bg-white text-slate-900 shadow-sm border border-slate-200/40">設定 1 (ベタピン)</button>
-                    <button type="button" onclick="setParam('setting', '2')" id="btn-setting-2" class="py-2.5 text-xs font-black rounded-lg transition-all text-slate-500 hover:text-slate-800">設定 2 (特定日・高ベース)</button>
-                </div>
-                <input type="hidden" id="estimated-setting" value="1">
-            </div>
-
-            <!-- 回転数入力 -->
-            <div>
-                <label class="block text-[11px] font-bold text-slate-400 mb-1.5 tracking-wider uppercase">現在の回転数 (G)</label>
-                <div class="relative">
-                    <input type="number" id="game-count" placeholder="350" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-slate-900 font-black text-xl placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/20 focus:border-fuchsia-400 transition-all">
-                    <span class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-black tracking-widest italic">G</span>
-                </div>
-            </div>
-
-            <button onclick="calculate()" class="w-full bg-fuchsia-500 hover:bg-fuchsia-600 text-white font-black text-base py-4 rounded-xl mt-6 transition-all shadow-md shadow-fuchsia-500/10 active:scale-[0.98] tracking-wider uppercase">
-                期待値を計算する
-            </button>
-        </div>
-
-        <!-- 計算結果表示エリア ＋ 【新規】SNSシェアセクション -->
-        <div id="result-box" class="hidden bg-white rounded-2xl p-5 shadow-md border transition-all duration-300 space-y-4">
-            <div>
-                <h2 class="text-xs font-black text-slate-400 text-center mb-4 tracking-widest uppercase"><i class="fa-solid fa-magnifying-glass-chart mr-1.5 text-fuchsia-500"></i>ANALYSIS RESULT</h2>
-                
-                <div class="flex justify-between items-center border-b border-slate-100 pb-3.5 mb-3.5">
-                    <span class="text-sm text-slate-500 font-bold">算出期待値</span>
-                    <span id="expect-value" class="text-2xl font-black tracking-wide">-- 円</span>
-                </div>
-                
-                <div class="flex justify-between items-center border-b border-slate-100 pb-3.5 mb-3.5">
-                    <span class="text-sm text-slate-500 font-bold">推奨アクション</span>
-                    <span id="action-advice" class="font-black text-xs px-3 py-1 rounded-full tracking-wider">--</span>
-                </div>
-                
-                <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
-                    <div id="detail-comment" class="text-sm text-slate-600 font-bold leading-relaxed"></div>
-                </div>
-            </div>
-
-            <!-- ★新規実装：SNSシェアコントロールセンター -->
-            <div class="pt-2 border-t border-slate-100 space-y-2.5">
-                <p class="text-[10px] font-black text-slate-400 tracking-wider text-center uppercase">この分析結果をシェアする</p>
-                
-                <!-- X (Twitter) 一発シェアボタン -->
-                <a id="btn-share-x" target="_blank" href="#" class="w-full bg-slate-900 hover:bg-black text-white py-3 rounded-xl flex items-center justify-center space-x-2 text-xs font-black transition-all shadow-sm active:scale-[0.98]">
-                    <i class="fa-brands fa-x-twitter text-sm"></i>
-                    <span>X（Twitter）で結果をポスト</span>
-                </a>
-
-                <!-- インスタ・TikTok用：結果コピー ＆ 各種SNS公式リンクボタン -->
-                <div class="grid grid-cols-3 gap-2">
-                    <!-- コピーボタン -->
-                    <button onclick="copyResultToClipboard()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl flex flex-col items-center justify-center transition-all active:scale-[0.95] border border-slate-200/40">
-                        <i class="fa-solid fa-copy text-sm mb-1"></i>
-                        <span class="text-[9px] font-black">結果をコピー</span>
-                    </button>
-                    <!-- Instagramリンク（※将来あなたの公式アカウントのURLに差し替えます） -->
-                    <a href="https://instagram.com" target="_blank" class="bg-gradient-to-tr from-amber-500 via-rose-500 to-purple-600 text-white py-3 rounded-xl flex flex-col items-center justify-center transition-all active:scale-[0.95] shadow-sm">
-                        <i class="fa-brands fa-instagram text-sm mb-1"></i>
-                        <span class="text-[9px] font-black">Instagram</span>
-                    </a>
-                    <!-- TikTokリンク（※将来あなたの公式アカウントのURLに差し替えます） -->
-                    <a href="https://tiktok.com" target="_blank" class="bg-slate-900 text-white py-3 rounded-xl flex flex-col items-center justify-center transition-all active:scale-[0.95] shadow-sm border border-slate-800">
-                        <i class="fa-brands fa-tiktok text-sm mb-1 text-cyan-400 drop-shadow-[1px_1px_0_rgba(239,68,68,1)]"></i>
-                        <span class="text-[9px] font-black">TikTok</span>
-                    </a>
-                </div>
-                <!-- コピー成功メッセージの表示用 -->
-                <p id="copy-toast" class="hidden text-[10px] text-emerald-600 font-bold text-center animate-pulse"><i class="fa-solid fa-check mr-1"></i>クリップボードに結果をコピーしました！</p>
-            </div>
-        </div>
-
-        <!-- アフィリエイト枠 -->
-        <div class="bg-white rounded-2xl p-4 border border-dashed border-slate-200 text-center">
-            <p class="text-[9px] text-slate-400 font-black mb-2 tracking-widest uppercase">RECOMMEND</p>
-            <div class="bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left cursor-pointer transition-all border border-slate-100">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-fuchsia-50 text-fuchsia-600 p-2.5 rounded-lg border border-fuchsia-100">
-                        <i class="fa-solid fa-piggy-bank text-base"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-black text-slate-700">立ち回りの軍資金を賢く作る</h4>
-                        <p class="text-[10px] text-slate-500 font-medium mt-0.5">スロッターの支持率が高い人気カード特集</p>
-                    </div>
-                </div>
-                <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
-            </div>
-        </div>
-    </main>
-
-    <!-- フッター -->
-    <footer class="bg-white p-6 text-center text-[10px] text-slate-400 border-t border-slate-100">
-        <p class="font-bold tracking-wider text-slate-400">© 2026 slotedge.com</p>
-    </footer>
-
-    <!-- JavaScriptロジック -->
-    <script>
-        // グローバル変数で現在のシェア用テキストを保持
-        let currentShareText = "";
-
-        function setParam(type, value) {
-            document.getElementById(`${type === 'status' ? 'internal-status' : type === 'rate' ? 'exchange-rate' : 'estimated-setting'}`).value = value;
-            let targetGroup = type === 'status' ? ['normal', 'reset', 'single'] : type === 'rate' ? ['50', '56p', '56c'] : ['1', '2'];
-            
-            targetGroup.forEach(item => {
-                const btn = document.getElementById(`btn-${type}-${item}`);
-                btn.className = item === value ? "py-2.5 text-xs font-black rounded-lg transition-all bg-white text-slate-900 shadow-sm border border-slate-200/40" : "py-2.5 text-[10px] md:text-xs font-black rounded-lg transition-all text-slate-500 hover:text-slate-800";
-            });
+        if (isNaN(games) || games < 0) {
+            alert('正しいゲーム数を入力してください');
+            return;
         }
 
-        function calculate() {
-            const game = parseInt(document.getElementById('game-count').value);
-            const status = document.getElementById('internal-status').value;
-            const rate = document.getElementById('exchange-rate').value;
-            const setting = document.getElementById('estimated-setting').value;
-            
-            const resultBox = document.getElementById('result-box');
-            const expectValue = document.getElementById('expect-value');
-            const actionAdvice = document.getElementById('action-advice');
-            const detailComment = document.getElementById('detail-comment');
+        const data = machineData[machine];
+        let resultText = "";
+        let targetText = `狙い目目安: ${data.recommend}`;
 
-            if (isNaN(game) || game < 0) {
-                alert('有効なゲーム数を入力してください');
-                return;
-            }
-
-            resultBox.classList.remove('hidden');
-
-            let baseValue = 0;
-            let borderGame = 0;
-
-            if (status === 'reset') {
-                borderGame = 200;
-                baseValue = game < 100 ? -200 : game < 200 ? 600 : 2000 + (game - 200) * 18;
-            } else if (status === 'single') {
-                borderGame = 450;
-                baseValue = game < 400 ? -400 : game < 500 ? 1100 : 2800 + (game - 500) * 16;
+        // --- 期待値計算ロジック（北斗の拳の簡易サンプル） ---
+        if (machine === 'hokuto') {
+            if (games >= 1268) {
+                resultText = "天井到達";
+            } else if (games >= 800) {
+                resultText = `約 +3,500 円`;
+            } else if (games >= 600) {
+                resultText = `約 +1,800 円`;
+            } else if (games >= 400) {
+                resultText = `約 +400 円`;
             } else {
-                borderGame = 580;
-                baseValue = game < 450 ? -800 : game < 600 ? 500 : 2200 + (game - 600) * 16;
+                resultText = `約 -600 円`;
             }
-
-            if (setting === '2') {
-                baseValue += 800 + (game * 0.5);
-                borderGame -= 50;
-            }
-
-            let finalValue = baseValue;
-            let rateText = "等価交換";
-            if (rate === '56p') { finalValue = Math.round(baseValue * 0.89); rateText = "5.6枚(貯メダル)"; }
-            if (rate === '56c') { finalValue = Math.round((baseValue - Math.max(500, (1200 - game) * 1.5)) * 0.89); borderGame += 80; rateText = "5.6枚(現金投資)"; }
-
-            let advice = game < borderGame - 50 ? "見送り推奨" : game < borderGame ? "慎重に検討" : "遊技を推奨！";
-            let colorClass = game < borderGame - 50 ? "text-rose-500" : game < borderGame ? "text-amber-600" : "text-emerald-600 font-black";
-            let adviceBgClass = game < borderGame - 50 ? "bg-rose-50 text-rose-600 border border-rose-200" : game < borderGame ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200";
-            let boxBorderClass = game < borderGame - 50 ? "border-rose-200 shadow-rose-100" : game < borderGame ? "border-amber-200 shadow-amber-100" : "border-fuchsia-400 shadow-fuchsia-100";
-
-            finalValue = Math.floor(finalValue / 10) * 10;
-            const formattedValue = (finalValue > 0 ? "+" : "") + finalValue.toLocaleString() + " 円";
-            
-            expectValue.textContent = formattedValue;
-            expectValue.className = `text-2xl font-black ${colorClass}`;
-            actionAdvice.textContent = advice;
-            actionAdvice.className = `font-black text-xs px-3 py-1 rounded-full ${adviceBgClass}`;
-            resultBox.className = `bg-white rounded-2xl p-5 shadow-md border ${boxBorderClass} transition-all duration-300 space-y-4`;
-
-            let statusText = status === 'reset' ? '設定変更(リセ)' : status === 'single' ? '前回単発後' : '通常営業';
-            let settingText = setting === '2' ? '設定2ベース' : '設定1ベース';
-            let rateComment = rate === '56p' ? "【5.6枚再プレイ】貯メダル遊技想定。現金投資より有利です。" : rate === '56c' ? "【5.6枚現金投資】ギャップペナルティ発生。深いゲーム数から狙う必要があります。" : "【5.0枚等価】最高環境です。期待値がそのまま手元に残ります。";
-
-            detailComment.innerHTML = `
-                <div class="space-y-1 text-[13px]">
-                    <p class="text-slate-500">【算出条件】${statusText} / ${settingText}</p>
-                    <p class="text-slate-700 mt-2">${rateComment}</p>
-                    <p class="text-slate-700 mt-1">この条件での目標ボーダーは <span class="text-fuchsia-600 font-black">${borderGame} G</span> です。</p>
-                </div>
-            `;
-
-            // ★動的SNSテキスト生成ロジック
-            currentShareText = `SlotEdgeで期待値分析完了！\n\n【機種】スマスロ北斗の拳\n【状態】${statusText} (${settingText})\n【環境】${rateText}\n【ゲーム数】${game}G\n\n➔ 算出期待値：${formattedValue}（${advice}）\n\n客観的データで狙う、立ち回りの優位性。`;
-            
-            // Xのシェアリンクを構築（現在のドメインがslotedge.comと仮定してURLをエンコード）
-            const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(currentShareText)}&url=${encodeURIComponent('https://slotedge.com')}`;
-            document.getElementById('btn-share-x').href = xUrl;
-
-            resultBox.scrollIntoView({ behavior: 'smooth' });
+        } 
+        // --- 東京喰種のロジック（数値待ち） ---
+        else if (machine === 'ghoul') {
+            resultText = "データ登録後に計算可能になります";
+        } 
+        // --- からくり2のロジック（数値待ち） ---
+        else if (machine === 'karakuri2') {
+            resultText = "データ登録後に計算可能になります";
         }
 
-        // ★インスタ・TikTok用のクリップボードコピー機能
-        function copyResultToClipboard() {
-            if (!currentShareText) return;
-            
-            // クリップボードにテキストを書き込み
-            navigator.clipboard.writeText(currentShareText + "\n#SlotEdge https://slotedge.com").then(() => {
-                const toast = document.getElementById('copy-toast');
-                toast.classList.remove('hidden');
-                setTimeout(() => {
-                    toast.classList.add('hidden');
-                }, 2500);
-            }).catch(err => {
-                alert('コピーに失敗しました。手動でスクショ・選択してください。');
-            });
-        }
-    </script>
+        // 結果を表示
+        const resultBox = document.getElementById('result-box');
+        const output = document.getElementById('edge-output');
+        const note = document.getElementById('target-note');
+
+        output.innerText = resultText;
+        note.innerText = targetText;
+        resultBox.style.display = 'block';
+    }
+</script>
+
 </body>
 </html>
