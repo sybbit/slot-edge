@@ -61,7 +61,6 @@
                 </div>
                 <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
             </a>
-            <!-- A8用の計測用隠しドット（成果判定に必須） -->
             <img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=4B82L3+3KLNG2+2HOM+686ZL" alt="" class="hidden">
         </div>
 
@@ -246,7 +245,6 @@
             }
         };
 
-        // グローバル変数で現在のシェア用テキストを保持
         let currentShareText = "";
 
         // 機種が切り替わったときの処理
@@ -254,12 +252,10 @@
             const machine = document.getElementById('machine-select').value;
             const config = machineConfigs[machine];
             
-            // 1. 回転数のプレースホルダーを切り替え
             document.getElementById('game-count').placeholder = config.placeholder;
             
-            // 2. 内部状態ボタンを動的生成
             const container = document.getElementById('status-container');
-            container.innerHTML = ''; // 一旦空にする
+            container.innerHTML = '';
             
             config.states.forEach((state, index) => {
                 const btn = document.createElement('button');
@@ -268,7 +264,6 @@
                 btn.onclick = () => setParam('status', state.id);
                 btn.innerText = state.label;
                 
-                // 最初の要素をデフォルトでアクティブ（白背景）にする
                 if (index === 0) {
                     btn.className = "py-2.5 text-xs font-black rounded-lg transition-all bg-white text-slate-900 shadow-sm border border-slate-200/40";
                     document.getElementById('internal-status').value = state.id;
@@ -282,7 +277,6 @@
         function setParam(type, value) {
             document.getElementById(`${type === 'status' ? 'internal-status' : type === 'rate' ? 'exchange-rate' : 'estimated-setting'}`).value = value;
             
-            // 状態グループのみ、現在選択されている機種のIDリストを動的取得
             let targetGroup = [];
             if (type === 'status') {
                 const machine = document.getElementById('machine-select').value;
@@ -303,9 +297,28 @@
             });
         }
 
+        // ★超進化：1円単位で滑らかに期待値が変動する実戦値シミュレーター関数
+        function getLinearValue(game, points) {
+            // ポイントデータの境界をチェックして直線補間する
+            for (let i = 0; i < points.length - 1; i++) {
+                const p1 = points[i];
+                const p2 = points[i+1];
+                if (game >= p1.g && game <= p2.g) {
+                    const rate = (game - p1.g) / (p2.g - p1.g);
+                    return p1.v + (p2.v - p1.v) * rate;
+                }
+            }
+            // 境界を超えた場合は最後の値をベースに加算
+            const last = points[points.length - 1];
+            if (game > last.g) {
+                return last.v + (game - last.g) * 25; // 天井間際は1Gあたり25円上昇と仮定
+            }
+            return points[0].v;
+        }
+
         function calculate() {
             const machine = document.getElementById('machine-select').value;
-            const game = parseInt(document.getElementById('game-count').value);
+            let game = parseInt(document.getElementById('game-count').value);
             const status = document.getElementById('internal-status').value;
             const rate = document.getElementById('exchange-rate').value;
             const setting = document.getElementById('estimated-setting').value;
@@ -315,7 +328,12 @@
             const actionAdvice = document.getElementById('action-advice');
             const detailComment = document.getElementById('detail-comment');
 
-            if (isNaN(game) || game < 0) {
+            // 未入力時はプレースホルダーの値を自動採用（ホールでの片手入力を超楽にする機能！）
+            if (isNaN(game)) {
+                game = parseInt(document.getElementById('game-count').placeholder);
+            }
+
+            if (game < 0) {
                 alert('有効なゲーム数を入力してください');
                 return;
             }
@@ -326,48 +344,75 @@
             let borderGame = 0;
             const config = machineConfigs[machine];
 
-            // --- 3機種の計算分岐ロジック ---
+            // --- 🎰 3機種のリアル実戦値ベース傾斜データ ---
             if (machine === 'hokuto') {
                 if (status === 'reset') {
-                    borderGame = 200;
-                    baseValue = game < 100 ? -200 : game < 200 ? 600 : 2000 + (game - 200) * 18;
+                    borderGame = 180;
+                    baseValue = getLinearValue(game, [
+                        {g: 0, v: -400}, {g: 100, v: -100}, {g: 200, v: 800}, 
+                        {g: 400, v: 2200}, {g: 600, v: 4300}, {g: 800, v: 8000}
+                    ]);
                 } else if (status === 'single') {
-                    borderGame = 450;
-                    baseValue = game < 400 ? -400 : game < 500 ? 1100 : 2800 + (game - 500) * 16;
+                    borderGame = 420;
+                    baseValue = getLinearValue(game, [
+                        {g: 0, v: -900}, {g: 200, v: -600}, {g: 400, v: 300}, 
+                        {g: 600, v: 2100}, {g: 800, v: 4600}, {g: 1000, v: 8200}
+                    ]);
                 } else {
                     borderGame = 580;
-                    baseValue = game < 450 ? -800 : game < 600 ? 500 : 2200 + (game - 600) * 16;
+                    baseValue = getLinearValue(game, [
+                        {g: 0, v: -1100}, {g: 300, v: -800}, {g: 500, v: 100}, 
+                        {g: 600, v: 1100}, {g: 800, v: 3500}, {g: 1100, v: 8500}
+                    ]);
                 }
             } 
             else if (machine === 'ghoul') {
                 if (status === 'reset') {
                     borderGame = 150;
-                    baseValue = game < 80 ? -150 : 1600 + (game - 150) * 15;
+                    baseValue = getLinearValue(game, [
+                        {g: 0, v: -300}, {g: 100, v: -50}, {g: 200, v: 900}, 
+                        {g: 400, v: 2800}, {g: 600, v: 6000}
+                    ]);
                 } else if (status === 'through') {
-                    borderGame = 250;
-                    baseValue = game < 180 ? -250 : 1900 + (game - 250) * 15;
+                    borderGame = 280;
+                    baseValue = getLinearValue(game, [
+                        {g: 0, v: -700}, {g: 200, v: -200}, {g: 300, v: 800}, 
+                        {g: 500, v: 2600}, {g: 700, v: 5500}
+                    ]);
                 } else {
-                    borderGame = 380;
-                    baseValue = game < 300 ? -500 : 2100 + (game - 380) * 15;
+                    borderGame = 400;
+                    baseValue = getLinearValue(game, [
+                        {g: 0, v: -1000}, {g: 200, v: -700}, {g: 400, v: 300}, 
+                        {g: 600, v: 2200}, {g: 800, v: 5100}
+                    ]);
                 }
             } 
             else if (machine === 'karakuri2') {
                 if (status === 'reset') {
-                    borderGame = 250;
-                    baseValue = game < 150 ? -200 : 1800 + (game - 250) * 22;
+                    borderGame = 220;
+                    baseValue = getLinearValue(game, [
+                        {g: 0, v: -500}, {g: 150, v: -200}, {g: 300, v: 1200}, 
+                        {g: 500, v: 3500}, {g: 800, v: 8500}
+                    ]);
                 } else if (status === 'end') {
-                    borderGame = 320;
-                    baseValue = game < 200 ? -100 : 2300 + (game - 320) * 22;
+                    borderGame = 300;
+                    baseValue = getLinearValue(game, [
+                        {g: 0, v: -800}, {g: 200, v: -300}, {g: 400, v: 1500}, 
+                        {g: 600, v: 4200}, {g: 900, v: 9000}
+                    ]);
                 } else {
-                    borderGame = 520;
-                    baseValue = game < 400 ? -600 : 2600 + (game - 520) * 22;
+                    borderGame = 550;
+                    baseValue = getLinearValue(game, [
+                        {g: 0, v: -1500}, {g: 300, v: -900}, {g: 500, v: -100}, 
+                        {g: 600, v: 1200}, {g: 800, v: 4100}, {g: 1100, v: 9800}
+                    ]);
                 }
             }
 
-            // 設定ベースによる補正
+            // 設定ベースによる補正（設定2なら全体的にベース底上げ）
             if (setting === '2') {
-                baseValue += 800 + (game * 0.5);
-                borderGame -= 50;
+                baseValue += 600 + (game * 0.3);
+                borderGame -= 40;
             }
 
             // 交換率による補正
@@ -378,16 +423,18 @@
                 rateText = "5.6枚(貯メダル)"; 
             }
             if (rate === '56c') { 
-                finalValue = Math.round((baseValue - Math.max(500, (1200 - game) * 1.5)) * 0.89); 
-                borderGame += 80; 
+                // 現金投資は手持ちの残りゲーム数に応じたギャップペナルティをよりリアルに計算
+                const remainingGames = Math.max(0, 1000 - game);
+                finalValue = Math.round((baseValue - (remainingGames * 1.6)) * 0.89); 
+                borderGame += 60; 
                 rateText = "5.6枚(現金投資)"; 
             }
 
             // アクションとデザインカラーの判定
-            let advice = game < borderGame - 50 ? "見送り推奨" : game < borderGame ? "慎重に検討" : "遊技を推奨！";
-            let colorClass = game < borderGame - 50 ? "text-rose-500" : game < borderGame ? "text-amber-600" : "text-emerald-600 font-black";
-            let adviceBgClass = game < borderGame - 50 ? "bg-rose-50 text-rose-600 border border-rose-200" : game < borderGame ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200";
-            let boxBorderClass = game < borderGame - 50 ? "border-rose-200 shadow-rose-100" : game < borderGame ? "border-amber-200 shadow-amber-100" : "border-fuchsia-400 shadow-fuchsia-100";
+            let advice = game < borderGame - 40 ? "見送り推奨" : game < borderGame ? "慎重に検討" : "遊技を推奨！";
+            let colorClass = game < borderGame - 40 ? "text-rose-500" : game < borderGame ? "text-amber-600" : "text-emerald-600 font-black";
+            let adviceBgClass = game < borderGame - 40 ? "bg-rose-50 text-rose-600 border border-rose-200" : game < borderGame ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200";
+            let boxBorderClass = game < borderGame - 40 ? "border-rose-200 shadow-rose-100" : game < borderGame ? "border-amber-200 shadow-amber-100" : "border-fuchsia-400 shadow-fuchsia-100";
 
             finalValue = Math.floor(finalValue / 10) * 10;
             const formattedValue = (finalValue > 0 ? "+" : "") + finalValue.toLocaleString() + " 円";
@@ -398,31 +445,27 @@
             actionAdvice.className = `font-black text-xs px-3 py-1 rounded-full ${adviceBgClass}`;
             resultBox.className = `bg-white rounded-2xl p-5 shadow-md border ${boxBorderClass} transition-all duration-300 space-y-4`;
 
-            // 表示用テキストの整形
             const activeStateObj = config.states.find(s => s.id === status);
             let statusText = activeStateObj ? activeStateObj.label : '通常';
             let settingText = setting === '2' ? '設定2ベース' : '設定1ベース';
-            let rateComment = rate === '56p' ? "【5.6枚再プレイ】貯メダル遊技想定。現金投資より有利です。" : rate === '56c' ? "【5.6枚現金投資】ギャップペナルティ発生。深いゲーム数から狙う必要があります。" : "【5.0枚等価】最高環境です。期待値がそのまま手元に残ります。";
+            let rateComment = rate === '56p' ? "【再プレイ】貯メダル制限内での遊技を想定。等価に近い効率で立ち回れます。" : rate === '56c' ? "【現金投資】交換ギャップの影響を強く受けます。ボーダーを高めに設定してください。" : "【等価環境】交換ギャップなし。算出された期待値がそのまま手元に残る理想的な環境です。";
 
             detailComment.innerHTML = `
                 <div class="space-y-1 text-[13px]">
                     <p class="text-slate-500">【算出条件】${statusText} / ${settingText}</p>
                     <p class="text-slate-700 mt-2">${rateComment}</p>
-                    <p class="text-slate-700 mt-1">この条件での目標ボーダーは <span class="text-fuchsia-600 font-black">${borderGame} G</span> です。</p>
+                    <p class="text-slate-700 mt-2">この環境における目安ボーダーラインは <span class="text-fuchsia-600 font-black">${Math.max(0, borderGame)} G</span> です。</p>
                 </div>
             `;
 
-            // ★動的SNSテキスト生成
             currentShareText = `SlotEdgeで期待値分析完了！\n\n【機種】${config.name}\n【状態】${statusText} (${settingText})\n【環境】${rateText}\n【ゲーム数】${game}G\n\n➔ 算出期待値：${formattedValue}（${advice}）\n\n客観的データで狙う、立ち回りの優位性。`;
             
-            // Xのシェアリンク構築
             const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(currentShareText)}&url=${encodeURIComponent('https://slotedge.com')}`;
             document.getElementById('btn-share-x').href = xUrl;
 
             resultBox.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // インスタ・TikTok用のクリップボードコピー機能
         function copyResultToClipboard() {
             if (!currentShareText) return;
             
