@@ -46,15 +46,13 @@
             <img src="banner.png" alt="その1台に『期待値』はあるか？" class="w-full rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] border border-slate-200">
         </div>
 
-        <!-- ★広告枠①：機種選択の一つ上（耳栓カスタム版） -->
+        <!-- ★広告枠①：機種選択の一つ上（耳栓カスタム・崩れ修復版） -->
         <div class="bg-white rounded-2xl p-4 border border-dashed border-slate-200 text-center">
             <p class="text-[9px] text-slate-400 font-black mb-2 tracking-widest uppercase">RECOMMEND</p>
-            <!-- ⬇️ hrefの中身を、いま貼ってあるA8コードの「aタグのリンクURL」に書き換えてください -->
-            <a href="ここにA8のaタグのリンクURL" target="_blank" rel="nofollow noopener noreferrer" class="block bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left transition-all border border-slate-100">
+            <a href="https://rpx.a8.net/svt/ejp?a8mat=4B82L3+3KLNG2+2HOM+686ZL&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26071735719_4B82L3_3KLNG2_2HOM_686ZL%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" target="_blank" rel="nofollow noopener noreferrer" class="block bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left transition-all border border-slate-100">
                 <div class="flex items-center space-x-3">
-                    <!-- 左側に商品の画像を丸角・シャドウ付きで美しく配置 -->
-                    <!-- ⬇️ srcの中身を、いま貼ってあるA8コードの「imgタグの画像URL」に書き換えてください -->
-                    <img src="ここにA8のimgタグの画像URL" alt="Loop Quiet 2" class="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-white shadow-sm flex-shrink-0">
+                    <!-- 左側に商品の画像（耳栓）を美しく配置 -->
+                    <img src="http://hbb.afl.rakuten.co.jp/hsb/0eb4bbc0.254a14a3.0eb4bbaa.95151395/" alt="Loop Quiet 2" class="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-white shadow-sm flex-shrink-0">
                     <div>
                         <h4 class="text-xs font-black text-slate-700">ホールの爆音対策に！Loop Quiet 2</h4>
                         <p class="text-[10px] text-slate-500 font-medium mt-0.5">不快な雑音だけをカット。スロッター愛用の最強耳栓</p>
@@ -62,7 +60,6 @@
                 </div>
                 <i class="fa-solid fa-chevron-right text-xs text-slate-400"></i>
             </a>
-            <!-- A8用の計測用隠しドット（成果追跡に必須） -->
             <img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=4B82L3+3KLNG2+2HOM+686ZL" alt="" class="hidden">
         </div>
 
@@ -334,7 +331,7 @@
             const expectValue = document.getElementById('expect-value');
             const actionAdvice = document.getElementById('action-advice');
             const detailComment = document.getElementById('detail-comment');
-            const strategyAdvice = document.getElementById('strategy-advice'); // 新規追加
+            const strategyAdvice = document.getElementById('strategy-advice');
 
             if (isNaN(game)) {
                 game = parseInt(document.getElementById('game-count').placeholder);
@@ -349,7 +346,7 @@
 
             let baseValue = 0;
             let borderGame = 0;
-            let strategyText = ""; // 立ち回り解説用テキスト
+            let strategyText = ""; 
             const config = machineConfigs[machine];
 
             // --- 🎰 3機種のロジック ＆ ヤメ時解説 ---
@@ -387,7 +384,7 @@
                     ]);
                 } else if (status === 'through') {
                     borderGame = 300;
-                    strategyText = "【狙い目】CZスルー後はAT間天井（1200G）が近い場合などがあり、ボーダーを優遇できます。データ機のCZ間ハマりを基準に狙います。<br>【ヤメ時】CZ終了後、即ヤメ。AT後は即前兆確認ヤメ。";
+                    strategyText = "【狙い目】CZスルー後はAT間天井（1200G）が近い場合などがあり、ボーダーを優遇できます。データ機のCZ間ハマりを基準に狙います。<br>【ヤメ時】CZ終了後, 即ヤメ。AT後は即前兆確認ヤメ。";
                     baseValue = getLinearValue(game, [
                         {g: 0, v: -600}, {g: 200, v: 200}, {g: 300, v: 1400}, 
                         {g: 380, v: 3000}, {g: 500, v: 5800}, {g: 600, v: 8500}
@@ -471,7 +468,6 @@
                 </div>
             `;
 
-            // ★ヤメ時・解説テキストの反映
             strategyAdvice.innerHTML = strategyText;
 
             currentShareText = `SlotEdgeで期待値分析完了！\n\n【機種】${config.name}\n【状態】${statusText} (${settingText})\n【環境】${rateText}\n【ゲーム数】${game}G\n\n➔ 算出期待値：${formattedValue}（${advice}）\n\n客観的データで狙う、立ち回りの優位性。`;
