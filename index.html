@@ -46,7 +46,7 @@
             <img src="banner.png" alt="その1台に『期待値』はあるか？" class="w-full rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] border border-slate-200">
         </div>
 
-        <!-- ★広告枠①：機種選択の一つ上（常時表示：A8楽天リンク組み込み済） -->
+        <!-- ★広告枠①：機種選択の一つ上（常時表示：A8楽天リンク復活） -->
         <div class="bg-white rounded-2xl p-4 border border-dashed border-slate-200 text-center">
             <p class="text-[9px] text-slate-400 font-black mb-2 tracking-widest uppercase">RECOMMEND</p>
             <a href="https://rpx.a8.net/svt/ejp?a8mat=4B82L3+3KLNG2+2HOM+686ZL&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26071735719_4B82L3_3KLNG2_2HOM_686ZL%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" target="_blank" rel="nofollow noopener noreferrer" class="block bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left transition-all border border-slate-100">
@@ -207,9 +207,14 @@
         </div>
     </main>
 
-    <!-- フッター -->
-    <footer class="bg-white p-6 text-center text-[10px] text-slate-400 border-t border-slate-100">
-        <p class="font-bold tracking-wider text-slate-400">© 2026 slotedge.com</p>
+    <!-- フッター（リスク管理のための免責事項を綺麗に統合） -->
+    <footer class="bg-white p-6 border-t border-slate-100">
+        <div class="max-w-md mx-auto text-center">
+            <p class="text-[9px] text-slate-400 leading-relaxed text-justify mb-4 opacity-80 bg-slate-50 p-3 rounded-lg border border-slate-100">
+                【免責事項】本ツールが算出する期待値は、市場データ等を元にした独自のシミュレーション値であり、その正確性や遊技での勝利を保証するものではありません。実際の数値はホール環境や打ち手の技量により変動します。本ツールを利用したことによって生じたいかなる損害・トラブルについても、当方は一切の責任を負いかねます。最終的な遊技の判断はご自身の責任で行ってください。
+            </p>
+            <p class="font-bold tracking-wider text-[10px] text-slate-400">© 2026 slotedge.com</p>
+        </div>
     </footer>
 
     <!-- JavaScriptロジック -->
@@ -354,7 +359,7 @@
                         {g: 0, v: -400}, 
                         {g: 100, v: 100}, 
                         {g: 180, v: 1100}, // ★等価狙い目（180Gで期待値約+1100円）
-                        {g: 280, v: 2600}, // ★56枚現金ボーダー（2800Gで期待値約+2600円）
+                        {g: 280, v: 2600}, // ★56枚現金ボーダー（280Gで期待値約+2600円）
                         {g: 400, v: 4500}, 
                         {g: 600, v: 7500},
                         {g: 800, v: 12000} // 短縮天井（800G）
