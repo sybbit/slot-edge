@@ -46,12 +46,11 @@
             <img src="banner.png" alt="その1台に『期待値』はあるか？" class="w-full rounded-2xl shadow-[0_10px_25px_rgba(0,0,0,0.1)] border border-slate-200">
         </div>
 
-        <!-- ★広告枠①：機種選択の一つ上（ダウンロード不要・超安定直リンク版） -->
+        <!-- ★広告枠①：機種選択の一つ上（耳栓カスタム・超安定直リンク版） -->
         <div class="bg-white rounded-2xl p-4 border border-dashed border-slate-200 text-center">
             <p class="text-[9px] text-slate-400 font-black mb-2 tracking-widest uppercase">RECOMMEND</p>
             <a href="https://rpx.a8.net/svt/ejp?a8mat=4B82L3+3KLNG2+2HOM+686ZL&rakuten=y&a8ejpredirect=http%3A%2F%2Fhb.afl.rakuten.co.jp%2Fhgc%2F0ea62065.34400275.0ea62066.204f04c0%2Fa26071735719_4B82L3_3KLNG2_2HOM_686ZL%3Fpc%3Dhttp%253A%252F%252Fwww.rakuten.co.jp%252F%26m%3Dhttp%253A%252F%252Fm.rakuten.co.jp%252F" target="_blank" rel="nofollow noopener noreferrer" class="block bg-slate-50 hover:bg-slate-100/80 p-3 rounded-xl flex items-center justify-between text-left transition-all border border-slate-100">
                 <div class="flex items-center space-x-3">
-                    <!-- ⬇️ 外部の超安定・超高速なセキュリティクリア済みの画像URLをセット！ -->
                     <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=150&auto=format&fit=crop&q=80" alt="Loop Quiet 2" class="w-12 h-12 rounded-xl object-cover border border-slate-200 bg-white shadow-sm flex-shrink-0">
                     <div>
                         <h4 class="text-xs font-black text-slate-700">ホールの爆音対策に！Loop Quiet 2</h4>
@@ -118,6 +117,34 @@
                 <input type="hidden" id="estimated-setting" value="1">
             </div>
 
+            <!-- ★新機能：独自ロジックによる補正機能（ON/OFF） -->
+            <div class="bg-slate-50/80 p-3.5 rounded-xl border border-slate-200/80 space-y-3">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <span class="text-xs font-black text-slate-700 flex items-center">
+                            <i class="fa-solid fa-wand-magic-sparkles text-fuchsia-500 mr-1.5"></i>独自ロジックによる補正機能
+                        </span>
+                        <p class="text-[9.5px] text-slate-400 font-medium mt-0.5">グラフの波（出玉傾向）を加味して精密計算</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="custom-logic-toggle" onchange="toggleCustomLogic()" class="sr-only peer">
+                        <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-fuchsia-500"></div>
+                    </label>
+                </div>
+
+                <!-- ONの時に開くアコーディオン（4つの波の選択） -->
+                <div id="custom-logic-container" class="hidden pt-2 border-t border-slate-200/60 space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-400 tracking-wider uppercase">直近の出玉の波（スランプグラフ）</label>
+                    <div class="grid grid-cols-2 gap-1.5 bg-slate-200/60 p-1 rounded-xl">
+                        <button type="button" onclick="setWaveParam('normal')" id="btn-wave-normal" class="py-2 px-1 text-[10px] font-black rounded-lg transition-all bg-white text-slate-900 shadow-sm">🟰 通常・プラマイゼロ</button>
+                        <button type="button" onclick="setWaveParam('spike')" id="btn-wave-spike" class="py-2 px-1 text-[10px] font-black rounded-lg transition-all text-slate-500 hover:text-slate-800">📈 一撃で大きく出た直後</button>
+                        <button type="button" onclick="setWaveParam('high')" id="btn-wave-high" class="py-2 px-1 text-[10px] font-black rounded-lg transition-all text-slate-500 hover:text-slate-800">🚀 終日右肩上がり(大勝ち)</button>
+                        <button type="button" onclick="setWaveParam('deep')" id="btn-wave-deep" class="py-2 px-1 text-[10px] font-black rounded-lg transition-all text-slate-500 hover:text-slate-800">📉 大幅に吸い込んでいる</button>
+                    </div>
+                    <input type="hidden" id="wave-status" value="normal">
+                </div>
+            </div>
+
             <!-- 回転数入力 -->
             <div>
                 <label class="block text-[11px] font-bold text-slate-400 mb-1.5 tracking-wider uppercase">現在の回転数 (G)</label>
@@ -172,7 +199,7 @@
                     <div id="detail-comment" class="text-sm text-slate-600 font-bold leading-relaxed"></div>
                 </div>
 
-                <!-- ★新規追加：ヤメ時・立ち回り解説エリア -->
+                <!-- ヤメ時・立ち回り解説エリア -->
                 <div class="bg-fuchsia-50/50 p-4 rounded-xl border border-fuchsia-100 mt-2">
                     <h3 class="text-[11px] font-black text-fuchsia-600 mb-2 flex items-center tracking-wider">
                         <i class="fa-solid fa-lightbulb mr-1.5"></i> 立ち回りのポイント（ヤメ時・恩恵）
@@ -255,6 +282,32 @@
 
         let currentShareText = "";
 
+        function toggleCustomLogic() {
+            const isChecked = document.getElementById('custom-logic-toggle').checked;
+            const container = document.getElementById('custom-logic-container');
+            if (isChecked) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+            }
+        }
+
+        function setWaveParam(value) {
+            document.getElementById('wave-status').value = value;
+            const waveKeys = ['normal', 'spike', 'high', 'deep'];
+            
+            waveKeys.forEach(key => {
+                const btn = document.getElementById(`btn-wave-${key}`);
+                if (btn) {
+                    if (key === value) {
+                        btn.className = "py-2 px-1 text-[10px] font-black rounded-lg transition-all bg-white text-slate-900 shadow-sm border border-slate-200/40";
+                    } else {
+                        btn.className = "py-2 px-1 text-[10px] font-black rounded-lg transition-all text-slate-500 hover:text-slate-800";
+                    }
+                }
+            });
+        }
+
         function onMachineChange() {
             const machine = document.getElementById('machine-select').value;
             const config = machineConfigs[machine];
@@ -327,6 +380,9 @@
             const rate = document.getElementById('exchange-rate').value;
             const setting = document.getElementById('estimated-setting').value;
             
+            const isCustomLogic = document.getElementById('custom-logic-toggle').checked;
+            const waveStatus = document.getElementById('wave-status').value;
+
             const resultBox = document.getElementById('result-box');
             const expectValue = document.getElementById('expect-value');
             const actionAdvice = document.getElementById('action-advice');
@@ -384,7 +440,7 @@
                     ]);
                 } else if (status === 'through') {
                     borderGame = 300;
-                    strategyText = "【狙い目】CZスルー後はAT間天井（1200G）が近い場合などがあり、ボーダーを優遇できます。データ機のCZ間ハマりを基準に狙います。<br>【ヤメ時】CZ終了後, 即ヤメ。AT後は即前兆確認ヤメ。";
+                    strategyText = "【狙い目】CZスルー後はAT間天井（1200G）が近い場合などがあり、ボーダーを優遇できます。データ機のCZ間ハマりを基準に狙います。<br>【ヤメ時】CZ終了後、即ヤメ。AT後は即前兆確認ヤメ。";
                     baseValue = getLinearValue(game, [
                         {g: 0, v: -600}, {g: 200, v: 200}, {g: 300, v: 1400}, 
                         {g: 380, v: 3000}, {g: 500, v: 5800}, {g: 600, v: 8500}
@@ -428,6 +484,24 @@
                 borderGame -= 40;
             }
 
+            // --- ⚡ 独自ロジック補正（1,600G & 6,000G規制考慮） ---
+            let customNote = "";
+            if (isCustomLogic) {
+                if (waveStatus === 'spike') {
+                    borderGame += 100; // 1,600G制限を考慮し厳しく
+                    baseValue -= 800;
+                    customNote = "【独自補正】直近の一撃大出しによる短期ブレーキ傾向を考慮し、通常より慎重なボーダー(+100G)を設定中。";
+                } else if (waveStatus === 'high') {
+                    borderGame += 140; // 6,000G累計制限を考慮しさらに厳しく
+                    baseValue -= 1200;
+                    customNote = "【独自補正】終日右肩上がりの累計上限ブレーキ傾向（6,000G規制対策）を考慮し、ボーダーを(+140G)大幅に厳しく設定中。";
+                } else if (waveStatus === 'deep') {
+                    borderGame -= 80; // 吸い込み救済を考慮し優遇
+                    baseValue += 800;
+                    customNote = "【独自補正】大幅な吸い込み状態による救済モジュール傾向を考慮し、ボーダーを(-80G)優遇設定中。";
+                }
+            }
+
             let finalValue = baseValue;
             let rateText = "等価交換";
             if (rate === '56p') { 
@@ -462,8 +536,9 @@
 
             detailComment.innerHTML = `
                 <div class="space-y-1 text-[13px]">
-                    <p class="text-slate-500">【算出条件】${statusText} / ${settingText}</p>
+                    <p class="text-slate-500">【算出条件】${statusText} / ${settingText} ${isCustomLogic ? '<span class="text-fuchsia-600 font-bold">（独自補正ON）</span>' : ''}</p>
                     <p class="text-slate-700 mt-2">${rateComment}</p>
+                    ${customNote ? `<p class="text-fuchsia-700 font-bold mt-2 bg-fuchsia-50 p-2 rounded-lg border border-fuchsia-100">${customNote}</p>` : ''}
                     <p class="text-slate-700 mt-2">この環境における目安ボーダーラインは <span class="text-fuchsia-600 font-black">${Math.max(0, borderGame)} G</span> です。</p>
                 </div>
             `;
