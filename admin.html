@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SlotEdge 管理画面</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-100 min-h-screen">
+
+    <header class="bg-slate-950 text-white p-4">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-lg font-black">
+                SlotEdge 管理画面
+            </h1>
+            <p class="text-xs text-slate-400 mt-1">
+                機種・期待値データ管理
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-4">
+
+        <div class="bg-white rounded-xl p-5 shadow-sm">
+
+            <h2 class="font-black text-slate-700 mb-4">
+                機種一覧
+            </h2>
+
+            <div id="machine-list">
+                読み込み中...
+            </div>
+
+        </div>
+
+    </main>
+
+<script>
+
+async function loadMachines() {
+
+    const container =
+        document.getElementById('machine-list');
+
+    try {
+
+        const response =
+            await fetch('/api/machines');
+
+        if (!response.ok) {
+            throw new Error(
+                `API Error: ${response.status}`
+            );
+        }
+
+        const data =
+            await response.json();
+
+        if (
+            !data.success ||
+            !Array.isArray(data.machines)
+        ) {
+            throw new Error(
+                'Invalid API response'
+            );
+        }
+
+        container.innerHTML = '';
+
+        data.machines.forEach(machine => {
+
+            const div =
+                document.createElement('div');
+
+            div.className =
+                'border-b border-slate-100 py-4 flex justify-between items-center';
+
+            div.innerHTML = `
+                <div>
+                    <div class="font-bold text-slate-800">
+                        ${machine.name}
+                    </div>
+
+                    <div class="text-xs text-slate-400 mt-1">
+                        ${machine.key}
+                    </div>
+                </div>
+
+                <span class="
+                    text-xs
+                    font-bold
+                    px-3
+                    py-1
+                    rounded-full
+                    ${machine.active
+                        ? 'bg-emerald-50 text-emerald-600'
+                        : 'bg-slate-100 text-slate-400'}
+                ">
+                    ${machine.active ? '公開中' : '非公開'}
+                </span>
+            `;
+
+            container.appendChild(div);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        container.innerHTML = `
+            <p class="text-rose-500 font-bold">
+                機種データの読み込みに失敗しました。
+            </p>
+        `;
+
+    }
+
+}
+
+document.addEventListener(
+    'DOMContentLoaded',
+    loadMachines
+);
+
+</script>
+
+</body>
+</html>
