@@ -1464,9 +1464,9 @@ function calculate() {
      */
 
     const state =
-        config.states.find(
-            s => s.id === status
-        );
+    config.states.find(
+        s => String(s.id) === String(status)
+    );
 
 
     if (!state) {
